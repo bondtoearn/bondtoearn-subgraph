@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ bondtoearn",
+    "deploy": "graph deploy --product hosted-service bondtoearn/bond-to-earn-subgraph",
     "create-local": "graph create --node http://pokt.drondin.xyz:18020/ bondtoearn",
     "remove-local": "graph remove --node http://pokt.drondin.xyz:18020/ bondtoearn",
     "deploy-local": "graph deploy --node http://pokt.drondin.xyz:18020/ --ipfs http://pokt.drondin.xyz:15001 bondtoearn"
