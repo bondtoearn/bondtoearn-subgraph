@@ -315,8 +315,13 @@
         "outputs": [
             {
                 "internalType": "bool",
-                "name": "",
+                "name": "amount",
                 "type": "bool"
+            },
+            {
+                "internalType": "address",
+                "name": "_recipient",
+                "type": "address"
             }
         ],
         "stateMutability": "nonpayable",

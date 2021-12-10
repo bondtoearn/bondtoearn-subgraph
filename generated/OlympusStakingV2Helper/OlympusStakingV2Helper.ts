@@ -100,6 +100,10 @@ export class StakeCall__Inputs {
   get _amount(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
+
+  get _recipient(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
 }
 
 export class StakeCall__Outputs {

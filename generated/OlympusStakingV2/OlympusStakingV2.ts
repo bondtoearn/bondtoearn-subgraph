@@ -77,6 +77,23 @@ export class OlympusStakingV2__epochResult {
   }
 }
 
+export class OlympusStakingV2__stakeResult {
+  value0: boolean;
+  value1: Address;
+
+  constructor(value0: boolean, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromBoolean(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+}
+
 export class OlympusStakingV2__warmupInfoResult {
   value0: BigInt;
   value1: BigInt;
@@ -253,28 +270,40 @@ export class OlympusStakingV2 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  stake(_amount: BigInt, _recipient: Address): boolean {
-    let result = super.call("stake", "stake(uint256,address):(bool)", [
+  stake(_amount: BigInt, _recipient: Address): OlympusStakingV2__stakeResult {
+    let result = super.call("stake", "stake(uint256,address):(bool,address)", [
       ethereum.Value.fromUnsignedBigInt(_amount),
       ethereum.Value.fromAddress(_recipient)
     ]);
 
-    return result[0].toBoolean();
+    return new OlympusStakingV2__stakeResult(
+      result[0].toBoolean(),
+      result[1].toAddress()
+    );
   }
 
   try_stake(
     _amount: BigInt,
     _recipient: Address
-  ): ethereum.CallResult<boolean> {
-    let result = super.tryCall("stake", "stake(uint256,address):(bool)", [
-      ethereum.Value.fromUnsignedBigInt(_amount),
-      ethereum.Value.fromAddress(_recipient)
-    ]);
+  ): ethereum.CallResult<OlympusStakingV2__stakeResult> {
+    let result = super.tryCall(
+      "stake",
+      "stake(uint256,address):(bool,address)",
+      [
+        ethereum.Value.fromUnsignedBigInt(_amount),
+        ethereum.Value.fromAddress(_recipient)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
+    return ethereum.CallResult.fromValue(
+      new OlympusStakingV2__stakeResult(
+        value[0].toBoolean(),
+        value[1].toAddress()
+      )
+    );
   }
 
   totalBonus(): BigInt {
@@ -731,8 +760,12 @@ export class StakeCall__Outputs {
     this._call = call;
   }
 
-  get value0(): boolean {
+  get amount(): boolean {
     return this._call.outputValues[0].value.toBoolean();
+  }
+
+  get _recipient(): Address {
+    return this._call.outputValues[1].value.toAddress();
   }
 }
 
