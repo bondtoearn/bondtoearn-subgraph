@@ -9,7 +9,7 @@ dataSources:
     name: OlympusStakingV2
     network: bsc
     source:
-      address: '0x23a60D4639b006D5012B1ab56213B62003898Eb2'
+      address: '0xe609e5da064A3D87fB938756399871FF8c2FD692'
       abi: OlympusStakingV2
       startBlock: 13345193
     mapping:
@@ -80,7 +80,7 @@ dataSources:
     name: OlympusStakingV2Helper
     network: bsc
     source:
-      address: '0xc1c408A51009dbCcdF2ACd2dd89E09F2A55Fc85b'
+      address: '0xA0C2fE397aA0390D9d99E533bed9db34e324ED7a'
       abi: OlympusStakingV2Helper
       startBlock: 13345193
     mapping:
@@ -269,7 +269,7 @@ dataSources:
     name: sOlympusERC20V2
     network: bsc
     source:
-      address: '0xB3B751E5aABc6c6b32d32eA9C484401536965365'
+      address: '0x029C0016d3ca2D4d66Dee2110F25f0C77d5C9ccC'
       abi: sOlympusERC20V2
       startBlock: 13345193
     mapping:
