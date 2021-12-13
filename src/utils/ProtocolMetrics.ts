@@ -65,7 +65,7 @@ function getCriculatingSupply(transaction: Transaction, total_supply: BigDecimal
     let circ_supply = BigDecimal.fromString("0")
     if (transaction.blockNumber.gt(BigInt.fromString(CIRCULATING_SUPPLY_CONTRACT_BLOCK))) {
         let circulatingsupply_contract = CirculatingSupply.bind(Address.fromString(CIRCULATING_SUPPLY_CONTRACT))
-        circ_supply = toDecimal(circulatingsupply_contract.OHMCirculatingSupply(), 9)
+        circ_supply = toDecimal(circulatingsupply_contract.BTECirculatingSupply(), 9)
     }
     else {
         circ_supply = total_supply;
@@ -86,7 +86,7 @@ function getSohmSupply(transaction: Transaction): BigDecimal {
 
 function getMV_RFV(transaction: Transaction): BigDecimal[] {
     let daiERC20 = ERC20.bind(Address.fromString(ERC20DAI_CONTRACT))
-  
+
 
     let ohmdaiPair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIR))
 
@@ -180,7 +180,10 @@ function getNextOHMRebase(transaction: Transaction): BigDecimal {
 }
 
 function getAPY_Rebase(sOHM: BigDecimal, distributedOHM: BigDecimal): BigDecimal[] {
-    let nextEpochRebase = distributedOHM.div(sOHM).times(BigDecimal.fromString("100"));
+    let nextEpochRebase = BigDecimal.fromString("0")
+
+    if (sOHM.gt(BigDecimal.fromString("1000000")))
+        nextEpochRebase = distributedOHM.div(sOHM).times(BigDecimal.fromString("100"));
 
     let nextEpochRebase_number = Number.parseFloat(nextEpochRebase.toString())
     let currentAPY = Math.pow(((nextEpochRebase_number / 100) + 1), (365 * 3) - 1) * 100

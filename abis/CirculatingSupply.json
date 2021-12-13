@@ -12,7 +12,7 @@
     },
     {
         "inputs": [],
-        "name": "OHM",
+        "name": "BTE",
         "outputs": [
             {
                 "internalType": "address",
@@ -25,7 +25,7 @@
     },
     {
         "inputs": [],
-        "name": "OHMCirculatingSupply",
+        "name": "BTECirculatingSupply",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -38,7 +38,7 @@
     },
     {
         "inputs": [],
-        "name": "getNonCirculatingOHM",
+        "name": "getNonCirculatingBTE",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -53,7 +53,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_ohm",
+                "name": "_bte",
                 "type": "address"
             }
         ],
@@ -89,7 +89,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "nonCirculatingOHMAddresses",
+        "name": "nonCirculatingBTEAddresses",
         "outputs": [
             {
                 "internalType": "address",
@@ -121,7 +121,7 @@
                 "type": "address[]"
             }
         ],
-        "name": "setNonCirculatingOHMAddresses",
+        "name": "setNonCirculatingBTEAddresses",
         "outputs": [
             {
                 "internalType": "bool",
