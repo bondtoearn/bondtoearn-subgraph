@@ -7,6 +7,7 @@ import { loadOrCreateToken } from './utils/Tokens'
 import { createDailyBondRecord } from './utils/DailyBond'
 import { getPairUSD } from './utils/Price'
 import { BondCreated, BondRedeemed } from '../generated/DAIBondV3/DAIBondV3'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 
 export function handleDeposit(event: BondCreated): void {
   let tx = event.transaction
@@ -21,7 +22,7 @@ export function handleDeposit(event: BondCreated): void {
   deposit.ohmie = ohmie.id
   deposit.amount = amount
   deposit.value = getPairUSD(event.params.deposit, SUSHI_OHMDAI_PAIR)
-  // deposit.maxPremium = toDecimal(call.inputs._maxPrice)
+  deposit.maxPremium = BigDecimal.fromString("0")
   deposit.token = token.id;
   deposit.timestamp = transaction.timestamp;
   deposit.save()

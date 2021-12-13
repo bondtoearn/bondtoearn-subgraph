@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal } from '@graphprotocol/graph-ts'
 
 import {  BondCreated, BondRedeemed } from '../generated/DAIBondV3/DAIBondV3'
 import { Deposit, Redemption } from '../generated/schema'
@@ -23,7 +23,7 @@ export function handleDeposit(event: BondCreated): void {
   deposit.ohmie = ohmie.id
   deposit.amount = amount
   deposit.value = amount
-  // deposit.maxPremium = toDecimal(event.transaction.)
+  deposit.maxPremium = BigDecimal.fromString("0")
   deposit.token = token.id;
   deposit.timestamp = transaction.timestamp;
   deposit.save()
