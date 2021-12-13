@@ -9,7 +9,7 @@ dataSources:
     name: OlympusStakingV2
     network: bsc
     source:
-      address: '0xe609e5da064A3D87fB938756399871FF8c2FD692'
+      address: '0xe222F719e941223A5982b3F09545b0D1694c940a'
       abi: OlympusStakingV2
       startBlock: 13433191
     mapping:
@@ -37,45 +37,50 @@ dataSources:
           file: ./abis/BondingCalculator.json
         - name: ERC20
           file: ./abis/ERC20.json
-      callHandlers:
-        - function: stake(uint256,address)
+      # callHandlers:
+      #   - function: stake(uint256,address)
+      #     handler: handleStake
+      #   - function: unstake(uint256,bool)
+      #     handler: handleUnstake
+      eventHandlers:
+        - event: LogStake(indexed address,uint256)
           handler: handleStake
-        - function: unstake(uint256,bool)
+        - event: LogUnstake(indexed address,uint256)
           handler: handleUnstake
       file: ./src/BondToEarnStaking.ts
   #Staking Contract V2 Helper
-  - kind: ethereum/contract
-    name: OlympusStakingV2Helper
-    network: bsc
-    source:
-      address: '0xA0C2fE397aA0390D9d99E533bed9db34e324ED7a'
-      abi: OlympusStakingV2Helper
-      startBlock: 13433191
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - OlympusStakingV2Helper
-      abis:
-        - name: OlympusStakingV2
-          file: ./abis/OlympusStakingV2.json
-        - name: OlympusStakingV2Helper
-          file: ./abis/OlympusStakingV2Helper.json
-        - name: sOlympusERC20V2
-          file: ./abis/sOlympusERC20V2.json
-        - name: OlympusERC20
-          file: ./abis/OlympusERC20.json
-        - name: UniswapV2Pair
-          file: ./abis/UniswapV2Pair.json
-        - name: DAIBondV3
-          file: ./abis/DAIBondV3.json
-        - name: OHMDAIBondV4
-          file: ./abis/OHMDAIBondV4.json
-      callHandlers:
-        - function: stake(uint256,address)
-          handler: handleStake
-      file: ./src/BondToEarnStakingHelper.ts
+  # - kind: ethereum/contract
+  #   name: OlympusStakingV2Helper
+  #   network: bsc
+  #   source:
+  #     address: '0xA0C2fE397aA0390D9d99E533bed9db34e324ED7a'
+  #     abi: OlympusStakingV2Helper
+  #     startBlock: 13433191
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.4
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - OlympusStakingV2Helper
+  #     abis:
+  #       - name: OlympusStakingV2
+  #         file: ./abis/OlympusStakingV2.json
+  #       - name: OlympusStakingV2Helper
+  #         file: ./abis/OlympusStakingV2Helper.json
+  #       - name: sOlympusERC20V2
+  #         file: ./abis/sOlympusERC20V2.json
+  #       - name: OlympusERC20
+  #         file: ./abis/OlympusERC20.json
+  #       - name: UniswapV2Pair
+  #         file: ./abis/UniswapV2Pair.json
+  #       - name: DAIBondV3
+  #         file: ./abis/DAIBondV3.json
+  #       - name: OHMDAIBondV4
+  #         file: ./abis/OHMDAIBondV4.json
+  #     callHandlers:
+  #       - function: stake(uint256,address)
+  #         handler: handleStake
+  #     file: ./src/BondToEarnStakingHelper.ts
   #DAI Bond Contract V2
   - kind: ethereum/contract
     name: DAIBondV3
@@ -103,11 +108,16 @@ dataSources:
           file: ./abis/DAIBondV3.json
         - name: OHMDAIBondV4
           file: ./abis/OHMDAIBondV4.json
-      callHandlers:
-        - function: deposit(uint256,uint256,address)
-          handler: handleDeposit
-        - function: redeem(address,bool)
-          handler: handleRedeem
+      # callHandlers:
+      #   - function: deposit(uint256,uint256,address)
+      #     handler: handleDeposit
+      #   - function: redeem(address,bool)
+      #     handler: handleRedeem
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
+          handler: handleStake
+        - event: BondRedeemed(indexed address,uint256,uint256)
+          handler: handleUnstake
       file: ./src/BUSDBond.ts
   #OHM DAI LP Bond Contract V4
   - kind: ethereum/contract
@@ -136,18 +146,23 @@ dataSources:
           file: ./abis/DAIBondV3.json
         - name: OHMDAIBondV4
           file: ./abis/OHMDAIBondV4.json
-      callHandlers:
-        - function: deposit(uint256,uint256,address)
-          handler: handleDeposit
-        - function: redeem(address,bool)
-          handler: handleRedeem
+      # callHandlers:
+      #   - function: deposit(uint256,uint256,address)
+      #     handler: handleDeposit
+      #   - function: redeem(address,bool)
+      #     handler: handleRedeem
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
+          handler: handleStake
+        - event: BondRedeemed(indexed address,uint256,uint256)
+          handler: handleUnstake
       file: ./src/BTEBUSDBond.ts
   #Staking OHM
   - kind: ethereum/contract
     name: sOlympusERC20V2
     network: bsc
     source:
-      address: '0x029C0016d3ca2D4d66Dee2110F25f0C77d5C9ccC'
+      address: '0x5617c8ca9F43eD02E0Bb6F84833a849afD99AeDd'
       abi: sOlympusERC20V2
       startBlock: 13433191
     mapping:
@@ -163,7 +178,10 @@ dataSources:
           file: ./abis/OlympusERC20.json
         - name: UniswapV2Pair
           file: ./abis/UniswapV2Pair.json
-      callHandlers:
-        - function: rebase(uint256,uint256)
+      # callHandlers:
+      #   - function: rebase(uint256,uint256)
+      #     handler: rebaseFunction
+      eventHandlers:
+        - event: LogRebase(indexed uint256,uint256,uint256,uint256)
           handler: rebaseFunction
       file: ./src/sBTE.ts

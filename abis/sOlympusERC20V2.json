@@ -41,6 +41,12 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
+                "name": "profit",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
                 "name": "rebase",
                 "type": "uint256"
             },

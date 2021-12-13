@@ -10,6 +10,50 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class LogStake extends ethereum.Event {
+  get params(): LogStake__Params {
+    return new LogStake__Params(this);
+  }
+}
+
+export class LogStake__Params {
+  _event: LogStake;
+
+  constructor(event: LogStake) {
+    this._event = event;
+  }
+
+  get staker(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class LogUnstake extends ethereum.Event {
+  get params(): LogUnstake__Params {
+    return new LogUnstake__Params(this);
+  }
+}
+
+export class LogUnstake__Params {
+  _event: LogUnstake;
+
+  constructor(event: LogUnstake) {
+    this._event = event;
+  }
+
+  get staker(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class OwnershipPulled extends ethereum.Event {
   get params(): OwnershipPulled__Params {
     return new OwnershipPulled__Params(this);
@@ -77,23 +121,6 @@ export class OlympusStakingV2__epochResult {
   }
 }
 
-export class OlympusStakingV2__stakeResult {
-  value0: boolean;
-  value1: Address;
-
-  constructor(value0: boolean, value1: Address) {
-    this.value0 = value0;
-    this.value1 = value1;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromBoolean(this.value0));
-    map.set("value1", ethereum.Value.fromAddress(this.value1));
-    return map;
-  }
-}
-
 export class OlympusStakingV2__warmupInfoResult {
   value0: BigInt;
   value1: BigInt;
@@ -122,14 +149,14 @@ export class OlympusStakingV2 extends ethereum.SmartContract {
     return new OlympusStakingV2("OlympusStakingV2", address);
   }
 
-  OHM(): Address {
-    let result = super.call("OHM", "OHM():(address)", []);
+  BTE(): Address {
+    let result = super.call("BTE", "BTE():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_OHM(): ethereum.CallResult<Address> {
-    let result = super.tryCall("OHM", "OHM():(address)", []);
+  try_BTE(): ethereum.CallResult<Address> {
+    let result = super.tryCall("BTE", "BTE():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -210,6 +237,29 @@ export class OlympusStakingV2 extends ethereum.SmartContract {
     );
   }
 
+  epochDistributePB(): BigInt {
+    let result = super.call(
+      "epochDistributePB",
+      "epochDistributePB():(uint256)",
+      []
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_epochDistributePB(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "epochDistributePB",
+      "epochDistributePB():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   index(): BigInt {
     let result = super.call("index", "index():(uint256)", []);
 
@@ -255,14 +305,14 @@ export class OlympusStakingV2 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  sOHM(): Address {
-    let result = super.call("sOHM", "sOHM():(address)", []);
+  sBTE(): Address {
+    let result = super.call("sBTE", "sBTE():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_sOHM(): ethereum.CallResult<Address> {
-    let result = super.tryCall("sOHM", "sOHM():(address)", []);
+  try_sBTE(): ethereum.CallResult<Address> {
+    let result = super.tryCall("sBTE", "sBTE():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -270,40 +320,28 @@ export class OlympusStakingV2 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  stake(_amount: BigInt, _recipient: Address): OlympusStakingV2__stakeResult {
-    let result = super.call("stake", "stake(uint256,address):(bool,address)", [
+  stake(_amount: BigInt, _recipient: Address): boolean {
+    let result = super.call("stake", "stake(uint256,address):(bool)", [
       ethereum.Value.fromUnsignedBigInt(_amount),
       ethereum.Value.fromAddress(_recipient)
     ]);
 
-    return new OlympusStakingV2__stakeResult(
-      result[0].toBoolean(),
-      result[1].toAddress()
-    );
+    return result[0].toBoolean();
   }
 
   try_stake(
     _amount: BigInt,
     _recipient: Address
-  ): ethereum.CallResult<OlympusStakingV2__stakeResult> {
-    let result = super.tryCall(
-      "stake",
-      "stake(uint256,address):(bool,address)",
-      [
-        ethereum.Value.fromUnsignedBigInt(_amount),
-        ethereum.Value.fromAddress(_recipient)
-      ]
-    );
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall("stake", "stake(uint256,address):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(_amount),
+      ethereum.Value.fromAddress(_recipient)
+    ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new OlympusStakingV2__stakeResult(
-        value[0].toBoolean(),
-        value[1].toAddress()
-      )
-    );
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   totalBonus(): BigInt {
@@ -410,11 +448,11 @@ export class ConstructorCall__Inputs {
     this._call = call;
   }
 
-  get _OHM(): Address {
+  get _BTE(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get _sOHM(): Address {
+  get _sBTE(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 
@@ -422,12 +460,16 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[2].value.toBigInt();
   }
 
-  get _firstEpochNumber(): BigInt {
+  get _epochDistributePB(): BigInt {
     return this._call.inputValues[3].value.toBigInt();
   }
 
-  get _firstEpochBlock(): BigInt {
+  get _firstEpochNumber(): BigInt {
     return this._call.inputValues[4].value.toBigInt();
+  }
+
+  get _firstEpochBlock(): BigInt {
+    return this._call.inputValues[5].value.toBigInt();
   }
 }
 
@@ -697,6 +739,36 @@ export class SetContractCall__Outputs {
   }
 }
 
+export class SetEpochDistributePBCall extends ethereum.Call {
+  get inputs(): SetEpochDistributePBCall__Inputs {
+    return new SetEpochDistributePBCall__Inputs(this);
+  }
+
+  get outputs(): SetEpochDistributePBCall__Outputs {
+    return new SetEpochDistributePBCall__Outputs(this);
+  }
+}
+
+export class SetEpochDistributePBCall__Inputs {
+  _call: SetEpochDistributePBCall;
+
+  constructor(call: SetEpochDistributePBCall) {
+    this._call = call;
+  }
+
+  get _epochDistributePB(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class SetEpochDistributePBCall__Outputs {
+  _call: SetEpochDistributePBCall;
+
+  constructor(call: SetEpochDistributePBCall) {
+    this._call = call;
+  }
+}
+
 export class SetWarmupCall extends ethereum.Call {
   get inputs(): SetWarmupCall__Inputs {
     return new SetWarmupCall__Inputs(this);
@@ -760,12 +832,8 @@ export class StakeCall__Outputs {
     this._call = call;
   }
 
-  get amount(): boolean {
+  get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
-  }
-
-  get _recipient(): Address {
-    return this._call.outputValues[1].value.toAddress();
   }
 }
 

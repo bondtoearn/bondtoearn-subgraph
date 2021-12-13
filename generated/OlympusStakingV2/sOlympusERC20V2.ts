@@ -53,12 +53,16 @@ export class LogRebase__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get rebase(): BigInt {
+  get profit(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get index(): BigInt {
+  get rebase(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+
+  get index(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
