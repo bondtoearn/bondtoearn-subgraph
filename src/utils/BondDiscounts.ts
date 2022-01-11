@@ -3,7 +3,7 @@ import { OHMDAIBondV4 } from '../../generated/OHMDAIBondV4/OHMDAIBondV4';
 import { DAIBondV3 } from '../../generated/DAIBondV3/DAIBondV3';
 
 import { BondDiscount, Transaction } from '../../generated/schema'
-import { DAIBOND_CONTRACTS3, DAIBOND_CONTRACTS3_BLOCK, OHMDAISLPBOND_CONTRACT4, OHMDAISLPBOND_CONTRACT4_BLOCK, } from './Constants';
+import { DAIBOND_CONTRACTS3, DAIBOND_CONTRACTS3_BLOCK, DAIBOND_CONTRACTS3_V2, DAIBOND_CONTRACTS3_V2_BLOCK, OHMDAISLPBOND_CONTRACT4, OHMDAISLPBOND_CONTRACT4_BLOCK, OHMDAISLPBOND_CONTRACT_V2, OHMDAISLPBOND_CONTRACT_V2_BLOCK, } from './Constants';
 import { hourFromTimestamp } from './Dates';
 import { toDecimal } from './Decimals';
 import { getOHMUSDRate } from './Price';
@@ -32,9 +32,12 @@ export function updateBondDiscounts(transaction: Transaction): void {
     let ohmRate = getOHMUSDRate();
 
     //OHMDAI
-    
-    if (transaction.blockNumber.gt(BigInt.fromString(OHMDAISLPBOND_CONTRACT4_BLOCK))) {
-        let bond = OHMDAIBondV4.bind(Address.fromString(OHMDAISLPBOND_CONTRACT4))
+    {
+        const BOND_CONTRACT = transaction.blockNumber.gt(BigInt.fromString(OHMDAISLPBOND_CONTRACT_V2_BLOCK))
+            ? OHMDAISLPBOND_CONTRACT_V2
+            : OHMDAISLPBOND_CONTRACT4
+
+        let bond = OHMDAIBondV4.bind(Address.fromString(BOND_CONTRACT))
         let price_call = bond.try_bondPriceInUSD()
         if (price_call.reverted === false && price_call.value.gt(BigInt.fromI32(0))) {
             bd.ohmdai_discount = ohmRate.div(toDecimal(price_call.value, 18))
@@ -44,10 +47,16 @@ export function updateBondDiscounts(transaction: Transaction): void {
         }
     }
 
-    //DAI
 
-    if (transaction.blockNumber.gt(BigInt.fromString(DAIBOND_CONTRACTS3_BLOCK))) {
-        let bond = DAIBondV3.bind(Address.fromString(DAIBOND_CONTRACTS3))
+
+
+    //DAI
+    {
+        const BOND_CONTRACT = transaction.blockNumber.gt(BigInt.fromString(DAIBOND_CONTRACTS3_V2_BLOCK))
+            ? DAIBOND_CONTRACTS3_V2
+            : DAIBOND_CONTRACTS3
+
+        let bond = DAIBondV3.bind(Address.fromString(BOND_CONTRACT))
         let price_call = bond.try_bondPriceInUSD()
         if (price_call.reverted === false && price_call.value.gt(BigInt.fromI32(0))) {
             bd.dai_discount = ohmRate.div(toDecimal(price_call.value, 18))
@@ -56,6 +65,6 @@ export function updateBondDiscounts(transaction: Transaction): void {
             log.debug("DAI Discount OHM price {}  Bond Price {}  Discount {}", [ohmRate.toString(), price_call.value.toString(), bd.ohmfrax_discount.toString()])
         }
     }
-    
+
     bd.save()
 }

@@ -151,3 +151,80 @@ dataSources:
         - event: LogRebase(indexed uint256,uint256,uint256,uint256)
           handler: rebaseFunction
       file: ./src/sBTE.ts
+
+      
+  #Bond V2
+  - kind: ethereum/contract
+    name: DAIBondV4
+    network: bsc
+    source:
+      address: '0x1bBD7f4c1821EDC8975d876B0404A35d31590371'
+      abi: DAIBondV3
+      startBlock: 14264839
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - DAIBondDeposit
+      abis:
+        - name: OlympusStakingV2
+          file: ./abis/OlympusStakingV2.json
+        - name: sOlympusERC20V2
+          file: ./abis/sOlympusERC20V2.json
+        - name: OlympusERC20
+          file: ./abis/OlympusERC20.json
+        - name: UniswapV2Pair
+          file: ./abis/UniswapV2Pair.json
+        - name: DAIBondV3
+          file: ./abis/DAIBondV3.json
+        - name: OHMDAIBondV4
+          file: ./abis/OHMDAIBondV4.json
+      # callHandlers:
+      #   - function: deposit(uint256,uint256,address)
+      #     handler: handleDeposit
+      #   - function: redeem(address,bool)
+      #     handler: handleRedeem
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
+          handler: handleDeposit
+        - event: BondRedeemed(indexed address,uint256,uint256)
+          handler: handleRedeem
+      file: ./src/BUSDBond.ts
+  - kind: ethereum/contract
+    name: OHMDAIBondV5
+    network: bsc
+    source:
+      address: '0x6cEb33696A23e852BFaB6b8e665aE376Fc4b7046'
+      abi: OHMDAIBondV4
+      startBlock: 14264839
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - OHMDAIBondV4
+      abis:
+        - name: OlympusStakingV2
+          file: ./abis/OlympusStakingV2.json
+        - name: sOlympusERC20V2
+          file: ./abis/sOlympusERC20V2.json
+        - name: OlympusERC20
+          file: ./abis/OlympusERC20.json
+        - name: UniswapV2Pair
+          file: ./abis/UniswapV2Pair.json
+        - name: DAIBondV3
+          file: ./abis/DAIBondV3.json
+        - name: OHMDAIBondV4
+          file: ./abis/OHMDAIBondV4.json
+      # callHandlers:
+      #   - function: deposit(uint256,uint256,address)
+      #     handler: handleDeposit
+      #   - function: redeem(address,bool)
+      #     handler: handleRedeem
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
+          handler: handleDeposit
+        - event: BondRedeemed(indexed address,uint256,uint256)
+          handler: handleRedeem
+      file: ./src/BTEBUSDBond.ts

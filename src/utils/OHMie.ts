@@ -5,7 +5,7 @@ import { sOlympusERC20V2 } from '../../generated/sOlympusERC20V2/sOlympusERC20V2
 import { DAIBondV3 } from '../../generated/DAIBondV3/DAIBondV3'
 import { OHMDAIBondV4 } from '../../generated/OHMDAIBondV4/OHMDAIBondV4'
 
-import { DAIBOND_CONTRACTS3, DAIBOND_CONTRACTS3_BLOCK, OHMDAISLPBOND_CONTRACT4, OHMDAISLPBOND_CONTRACT4_BLOCK, OHM_ERC20_CONTRACT, SOHM_ERC20_CONTRACTV2, SOHM_ERC20_CONTRACTV2_BLOCK } from '../utils/Constants'
+import { DAIBOND_CONTRACTS3, DAIBOND_CONTRACTS3_BLOCK, DAIBOND_CONTRACTS3_V2, DAIBOND_CONTRACTS3_V2_BLOCK, OHMDAISLPBOND_CONTRACT4, OHMDAISLPBOND_CONTRACT4_BLOCK, OHMDAISLPBOND_CONTRACT_V2, OHMDAISLPBOND_CONTRACT_V2_BLOCK, OHM_ERC20_CONTRACT, SOHM_ERC20_CONTRACTV2, SOHM_ERC20_CONTRACTV2_BLOCK } from '../utils/Constants'
 import { loadOrCreateOhmieBalance } from './OhmieBalances'
 import { toDecimal } from './Decimals'
 import { getOHMUSDRate } from './Price'
@@ -76,7 +76,12 @@ export function updateOhmieBalance(ohmie: Ohmie, transaction: Transaction): void
     //OHM-DAI
     let bonds = balance.bonds
     if (transaction.blockNumber.gt(BigInt.fromString(OHMDAISLPBOND_CONTRACT4_BLOCK))) {
-        let bondOHMDai_contract = OHMDAIBondV4.bind(Address.fromString(OHMDAISLPBOND_CONTRACT4))
+
+        const BOND_CONTRACT = transaction.blockNumber.gt(BigInt.fromString(OHMDAISLPBOND_CONTRACT_V2_BLOCK))
+            ? OHMDAISLPBOND_CONTRACT_V2
+            : OHMDAISLPBOND_CONTRACT4
+
+        let bondOHMDai_contract = OHMDAIBondV4.bind(Address.fromString(BOND_CONTRACT))
         let pending = bondOHMDai_contract.bondInfo(Address.fromString(ohmie.id))
         if (pending.value1.gt(BigInt.fromString("0"))) {
             let pending_bond = toDecimal(pending.value1, 9)
@@ -94,7 +99,12 @@ export function updateOhmieBalance(ohmie: Ohmie, transaction: Transaction): void
     }
     //DAI
     if (transaction.blockNumber.gt(BigInt.fromString(DAIBOND_CONTRACTS3_BLOCK))) {
-        let bondDai_contract = DAIBondV3.bind(Address.fromString(DAIBOND_CONTRACTS3))
+
+        const BOND_CONTRACT = transaction.blockNumber.gt(BigInt.fromString(DAIBOND_CONTRACTS3_V2_BLOCK))
+            ? DAIBOND_CONTRACTS3_V2
+            : DAIBOND_CONTRACTS3
+
+        let bondDai_contract = DAIBondV3.bind(Address.fromString(BOND_CONTRACT))
         let pending = bondDai_contract.bondInfo(Address.fromString(ohmie.id))
         if (pending.value1.gt(BigInt.fromString("0"))) {
             let pending_bond = toDecimal(pending.value1, 9)
